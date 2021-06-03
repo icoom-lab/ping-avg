@@ -11,8 +11,9 @@ Usage:
   ping-avg [flags]
 
 Flags:
-  -c, --count int   Specifies the number of echo Request messages be sent. The default is 4. (default 4)
+  -c, --count int   Specifies the number of echo Request messages be sent. The default is 1. (default -1)
   -h, --help        help for ping-avg
+  -v, --verbose     verbose output
 ```
 
 ```
