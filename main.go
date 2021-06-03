@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/go-ping/ping"
 	"github.com/spf13/cobra"
+	"os"
+	"text/tabwriter"
 )
 
 func main() {
@@ -15,6 +17,13 @@ func main() {
 		Long:  `Ping multiple hosts to determine the average over time`,
 		Args:  cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
+
+			w := tabwriter.NewWriter(os.Stdout, 10, 10, 3, ' ', 0)
+			defer w.Flush()
+
+			fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t%s\t", "ip", "avg", "min", "max", "loss")
+			fmt.Fprintf(w, "\n %s\t%s\t%s\t%s\t%s\t", "----", "----", "----", "----", "----")
+
 			for _, ip := range args {
 
 				pinger, err := ping.NewPinger(ip)
@@ -24,13 +33,12 @@ func main() {
 
 				pinger.Count = count
 
-				err = pinger.Run() // Blocks until finished.
+				err = pinger.Run()
 				if err != nil {
 					panic(err)
 				}
 				stats := pinger.Statistics()
-
-				fmt.Printf("%v 	avg=%v 		min=%v 	max=%v 	loss=%v\n", ip, stats.AvgRtt, stats.MinRtt, stats.MaxRtt, stats.PacketLoss)
+				fmt.Fprintf(w, "\n %v\t%v\t%v\t%v\t%v\t", ip, stats.AvgRtt, stats.MinRtt, stats.MaxRtt, stats.PacketLoss)
 			}
 		},
 	}
