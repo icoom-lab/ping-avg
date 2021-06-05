@@ -1,0 +1,40 @@
+name: Release draft
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  Release draft:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16.x
+
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/go/pkg/mod          # Module download cache
+          ~/.cache/go-build     # Build cache (Linux)
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+          
+    - name: Build
+      run: |
+        GOOS=darwin GOARCH=amd64 go build -v -o pingavg main.go
+
+    - uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "draft"
+        draft: true
+        title: Draft
+        files: |
+          pingavg

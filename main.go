@@ -57,7 +57,7 @@ func main() {
 		},
 	}
 
-	rootCmd.Flags().IntP("count", "c", -1, "Specifies the number of echo Request messages be sent. The default is 1.")
+	rootCmd.Flags().IntP("count", "c", 1, "Specifies the number of echo Request messages be sent. The default is 1.")
 	rootCmd.Flags().BoolP("verbose", "v", false, "verbose output")
 
 	rootCmd.Execute()
